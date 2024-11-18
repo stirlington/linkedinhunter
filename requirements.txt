@@ -2,4 +2,5 @@ streamlit
 pandas
 selenium
 openpyxl
-webdriver_manager 
+webdriver_manager
+streamlit-selenium 
