@@ -1,13 +1,33 @@
 import streamlit as st
-import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+import pandas as pd
 import time
+
+# Configure Streamlit page
+st.set_page_config(page_title="LinkedIn Job Search Assistant", layout="wide")
+
+@st.cache_resource
+def get_webdriver_options():
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-notifications')
+    options.add_argument('--disable-popup-blocking')
+    options.add_argument('--blink-settings=imagesEnabled=false')
+    return options
+
+# Rest of your code remains the same, but replace the driver initialization with:
+driver = webdriver.Chrome(
+    service=Service(ChromeDriverManager().install()),
+    options=get_webdriver_options()
+)
 
 st.title("LinkedIn Job Search Assistant")
 
@@ -27,14 +47,6 @@ if uploaded_file is not None:
     if st.button("Search Jobs"):
         # Initialize results DataFrame
         results_df = pd.DataFrame(columns=['Company', 'Title', 'Location', 'URL'])
-        
-        # Setup Chrome driver
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         
         try:
             for company in df['Company'].unique():  # Assuming company column is named 'Company'
